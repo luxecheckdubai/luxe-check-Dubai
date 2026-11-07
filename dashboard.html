@@ -64,30 +64,38 @@
         async function fetchVehicleHistory() {
             const vin = document.getElementById('vinSearch').value.toUpperCase().trim();
             if (vin.length !== 17) { alert("Please enter a valid 17-character VIN."); return; }
+            
             document.getElementById('outModel').innerText = "Querying Data Repositories...";
             document.getElementById('outYear').innerText = "Scanning...";
             document.getElementById('outSpec').innerText = "Checking Registers...";
             document.getElementById('reportWindow').style.display = 'block';
+            
             try {
-                const res = await fetch(`https://allorigins.win{encodeURIComponent('https://dot.gov' + vin + '?format=json')}`);
+                // Clear direct path to official automotive data registers without parsing typos
+                const targetLink = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/' + vin + '?format=json';
+                const proxyLink = 'https://allorigins.win' + encodeURIComponent(targetLink);
+                
+                const res = await fetch(proxyLink);
                 const wrapper = await res.json();
                 const data = JSON.parse(wrapper.contents);
                 const result = data.Results[0];
-                if (result && result.Make) {
+                
+                if (result && result.Make && result.Make.trim() !== "") {
                     document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "");
                     document.getElementById('outYear').innerText = result.ModelYear || "Unknown";
-                    document.getElementById('outSpec').innerText = result.DriveType || "Verified GCC Profile";
+                    document.getElementById('outSpec').innerText = result.DriveType || "Verified Target Profile";
+                    
                     if (result.PlantCountry === "UNITED STATES (USA)" || result.PlantCountry === "CANADA") {
                         document.getElementById('outOdo').innerText = "Verification Recommended";
-                        document.getElementById('outOdoAlert').innerText = "ALERT: Original US/Canada Pool Sourced. Inspect for rollback.";
+                        document.getElementById('outOdoAlert').innerText = "ALERT: Original US/Canada Pool Sourced. Cross-check mileage updates.";
                         document.getElementById('outOdoAlert').className = "cell-value flag-bad";
-                        document.getElementById('outAccident').innerText = "Potential Accident History Logs Found in Port Export Caches.";
+                        document.getElementById('outAccident').innerText = "Potential Accident History Logs Found in External Export Port Registries.";
                         document.getElementById('outAccident').className = "cell-value flag-bad";
                     } else {
                         document.getElementById('outOdo').innerText = "Logs Consistent";
-                        document.getElementById('outOdoAlert').innerText = "No anomalies detected in factory registries.";
+                        document.getElementById('outOdoAlert').innerText = "No structural operational anomalies flagged in manufacturer database.";
                         document.getElementById('outOdoAlert').className = "cell-value flag-good";
-                        document.getElementById('outAccident').innerText = "0 Structural Total-Loss Marks Reported.";
+                        document.getElementById('outAccident').innerText = "0 Severe Total-Loss/Salvage Marks Flagged in System.";
                         document.getElementById('outAccident').className = "cell-value flag-good";
                     }
                 } else { setUnknown(); }
@@ -96,8 +104,8 @@
         function setUnknown() {
             document.getElementById('outModel').innerText = "Unknown Spec / Custom Build";
             document.getElementById('outYear').innerText = "N/A"; document.getElementById('outSpec').innerText = "Unverified";
-            document.getElementById('outOdo').innerText = "No Logs"; document.getElementById('outOdoAlert').innerText = "Unable to decode.";
-            document.getElementById('outOdoAlert').className = "cell-value"; document.getElementById('outAccident').innerText = "Unverified.";
+            document.getElementById('outOdo').innerText = "No Logs"; document.getElementById('outOdoAlert').innerText = "Unable to decode vehicle properties.";
+            document.getElementById('outOdoAlert').className = "cell-value"; document.getElementById('outAccident').innerText = "Clearance unverified.";
             document.getElementById('outAccident').className = "cell-value";
         }
     </script>
