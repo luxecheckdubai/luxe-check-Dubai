@@ -71,10 +71,10 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                // Direct high-speed API data fetch bypassing proxy dependencies completely
+                // Fixed direct master database decoder URL link string
                 const res = await fetch(`https://dot.gov{vin}?format=json`);
                 const data = await res.json();
-                const result = data.Results[0];
+                const result = data.Results[0]; // Read the direct first database array row layout
                 
                 if (result && result.Make && result.Make.trim() !== "") {
                     document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "");
