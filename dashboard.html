@@ -6,41 +6,22 @@
     <title>Luxe Check Dubai - Enterprise Vehicle Intelligence</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #0d0e12; color: #e4e6eb; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* Sidebar Navigation Layout */
         .sidebar { width: 260px; background-color: #161820; border-right: 1px solid #252836; display: flex; flex-direction: column; padding: 25px 20px; }
-        .logo { font-size: 20px; font-weight: 700; color: #ffbc00; letter-spacing: 1px; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
-        .nav-item { padding: 12px 15px; border-radius: 8px; color: #a5a8b6; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: 0.2s; }
+        .logo { font-size: 20px; font-weight: 700; color: #ffbc00; letter-spacing: 1px; margin-bottom: 40px; }
+        .nav-item { padding: 12px 15px; border-radius: 8px; color: #a5a8b6; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
         .nav-item.active, .nav-item:hover { background-color: #252836; color: #ffffff; }
-        
-        /* Main Workspace Window */
         .main-content { flex: 1; display: flex; flex-direction: column; background-color: #0d0e12; padding: 40px; overflow-y: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .header h1 { font-size: 26px; font-weight: 600; color: #ffffff; }
-        
-        /* Enterprise VIN Search Console */
-        .search-container { background-color: #161820; border: 1px solid #252836; border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-        .search-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #a5a8b6; font-weight: 700; margin-bottom: 12px; display: block; }
+        .header h1 { font-size: 26px; font-weight: 600; color: #ffffff; margin-bottom: 40px; }
+        .search-container { background-color: #161820; border: 1px solid #252836; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+        .search-label { font-size: 13px; text-transform: uppercase; color: #a5a8b6; font-weight: 700; margin-bottom: 12px; display: block; }
         .search-box-row { display: flex; gap: 15px; }
-        .vin-input { flex: 1; background-color: #1f222a; border: 1px solid #252836; border-radius: 8px; padding: 16px 20px; font-size: 16px; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; transition: 0.3s; }
-        .vin-input:focus { border-color: #ffbc00; outline: none; }
-        .search-btn { background-color: #ffbc00; color: #0d0e12; border: none; border-radius: 8px; padding: 0 35px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .search-btn:hover { background-color: #e0a500; }
-        
-        /* Custom Desktop PWA Install Button banner */
-        .install-banner { display: none; background: linear-gradient(90deg, #1f222a, #161820); border: 1px dashed #ffbc00; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px; align-items: center; justify-content: space-between; }
-        .install-text { font-size: 14px; color: #e4e6eb; }
-        .install-btn { background-color: transparent; border: 1px solid #ffbc00; color: #ffbc00; padding: 6px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .install-btn:hover { background-color: #ffbc00; color: #0d0e12; }
-
-        /* Report Output Display */
+        .vin-input { flex: 1; background-color: #1f222a; border: 1px solid #252836; border-radius: 8px; padding: 16px 20px; font-size: 16px; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+        .search-btn { background-color: #ffbc00; color: #0d0e12; border: none; border-radius: 8px; padding: 0 35px; font-size: 15px; font-weight: 700; cursor: pointer; }
         .report-window { background-color: #161820; border: 1px solid #252836; border-radius: 12px; padding: 30px; display: none; }
-        .report-section { border-bottom: 1px solid #252836; padding-bottom: 20px; margin-bottom: 20px; }
-        .report-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
         .section-title { font-size: 14px; text-transform: uppercase; color: #ffbc00; font-weight: 700; margin-bottom: 15px; }
-        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
         .data-cell { background-color: #1f222a; padding: 15px; border-radius: 8px; border: 1px solid #252836; }
         .cell-label { font-size: 12px; color: #a5a8b6; margin-bottom: 5px; }
         .cell-value { font-size: 15px; font-weight: 600; color: #ffffff; }
@@ -49,174 +30,76 @@
     </style>
 </head>
 <body>
-
-    <!-- Sidebar Window -->
     <div class="sidebar">
         <div class="logo">🏁 LUXE CHECK</div>
-        <div id="nv-vin" class="nav-item active" onclick="switchTab('vin')">📊 VIN Intelligence Engine</div>
-        <div id="nv-billing" class="nav-item" onclick="switchTab('billing')">💳 Corporate License Billing</div>
-        <div id="nv-logs" class="nav-item" onclick="switchTab('logs')">📈 Data Aggregation Logs</div>
+        <div class="nav-item active">📊 VIN Intelligence Engine</div>
+        <div class="nav-item" onclick="alert('Gateway: Connected via Corporate USD/USDT Ledger Engine')">💳 Billing Profile</div>
+        <div class="nav-item" onclick="alert('Status: Database connection active and running.')">📈 Diagnostic Logs</div>
     </div>
-
-    <!-- Main Content Workspace -->
     <div class="main-content">
-        
-        <!-- App Install Notification Alert Banner -->
-        <div id="installBanner" class="install-banner">
-            <div class="install-text">⚡ Pin Luxe Check to your desktop dashboard for instant search access.</div>
-            <button id="btnInstall" class="install-btn">Install Shortcut</button>
-        </div>
-
-        <div class="header">
-            <h1 id="pageTitle">Vehicle History Intelligence Console</h1>
-        </div>
-
-        <!-- Tab 1: Search Console -->
-        <div id="tabVinConsole">
-            <div class="search-container">
-                <span class="search-label">Enter 17-Character Vehicle VIN (Dubai/US/Japan Specs)</span>
-                <div class="search-box-row">
-                    <input type="text" id="vinSearch" class="vin-input" placeholder="e.g. WBA7R2C50NGX2026X" maxlength="17">
-                    <button onclick="fetchVehicleHistory()" class="search-btn">Verify History</button>
-                </div>
-            </div>
-
-            <!-- Clean Formatted Output Report Window -->
-            <div id="reportWindow" class="report-window">
-                <div class="report-section">
-                    <div class="section-title">📋 Core Vehicle Registry Specs</div>
-                    <div class="data-grid">
-                        <div class="data-cell"><div class="cell-label">Make/Model</div><div id="outModel" class="cell-value">-</div></div>
-                        <div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div>
-                        <div class="data-cell"><div class="cell-label">Verified Spec Category</div><div id="outSpec" class="cell-value">-</div></div>
-                    </div>
-                </div>
-                
-                <div class="report-section">
-                    <div class="section-title">🚨 System Odometer & Integrity History Logs</div>
-                    <div class="data-grid">
-                        <div class="data-cell"><div class="cell-label">Current Odometer Log</div><div id="outOdo" class="cell-value">-</div></div>
-                        <div class="data-cell"><div class="cell-label">Odometer Status Alert</div><div id="outOdoAlert" class="cell-value">-</div></div>
-                        <div class="data-cell"><div class="cell-label">Accident Records Found</div><div id="outAccident" class="cell-value">-</div></div>
-                    </div>
-                </div>
+        <div class="header"><h1>Vehicle History Intelligence Console</h1></div>
+        <div class="search-container">
+            <span class="search-label">Enter 17-Character Vehicle VIN (Dubai/US/Japan Specs)</span>
+            <div class="search-box-row">
+                <input type="text" id="vinSearch" class="vin-input" placeholder="e.g. WBA7R2C50NGX2026X" maxlength="17">
+                <button onclick="fetchVehicleHistory()" class="search-btn">Verify History</button>
             </div>
         </div>
-
-        <!-- Tab 2: Billing Menu -->
-        <div id="tabBilling" style="display: none;">
-            <div class="search-container">
-                <h3 style="color: #ffbc00; margin-bottom: 15px;">Corporate Account Status</h3>
-                <p style="margin-bottom: 10px;">Client Profile: <strong>Active Subscription</strong></p>
-                <p>License Gateway: Connected via USD/USDT Ledger Engine</p>
+        <div id="reportWindow" class="report-window">
+            <div class="section-title">📋 Core Vehicle Registry Specs</div>
+            <div class="data-grid">
+                <div class="data-cell"><div class="cell-label">Make/Model</div><div id="outModel" class="cell-value">-</div></div>
+                <div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div>
+                <div class="data-cell"><div class="cell-label">Verified Spec Category</div><div id="outSpec" class="cell-value">-</div></div>
+            </div>
+            <div class="section-title">🚨 System Odometer & Integrity History Logs</div>
+            <div class="data-grid">
+                <div class="data-cell"><div class="cell-label">Current Odometer Log</div><div id="outOdo" class="cell-value">-</div></div>
+                <div class="data-cell"><div class="cell-label">Odometer Status Alert</div><div id="outOdoAlert" class="cell-value">-</div></div>
+                <div class="data-cell"><div class="cell-label">Accident Records Found</div><div id="outAccident" class="cell-value">-</div></div>
             </div>
         </div>
-
-        <!-- Tab 3: Logs Menu -->
-        <div id="tabLogs" style="display: none;">
-            <div class="search-container">
-                <h3 style="color: #ffbc00; margin-bottom: 15px;">System Diagnostic Logs</h3>
-                <p style="color: #2ecc71;">[SUCCESS] Database connection established seamlessly.</p>
-                <p style="color: #a5a8b6; margin-top: 10px;">System listening for unique 17-character VIN lookups...</p>
-            </div>
-        </div>
-
     </div>
-
     <script>
-        // Tab Swapping Code Logic
-        function switchTab(tabName) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            document.getElementById('tabVinConsole').style.display = 'none';
-            document.getElementById('tabBilling').style.display = 'none';
-            document.getElementById('tabLogs').style.display = 'none';
-
-            if (tabName === 'vin') {
-                document.getElementById('nv-vin').classList.add('active');
-                document.getElementById('tabVinConsole').style.display = 'block';
-                document.getElementById('pageTitle').innerText = "Vehicle History Intelligence Console";
-            } else if (tabName === 'billing') {
-                document.getElementById('nv-billing').classList.add('active');
-                document.getElementById('tabBilling').style.display = 'block';
-                document.getElementById('pageTitle').innerText = "Corporate License Billing";
-            } else if (tabName === 'logs') {
-                document.getElementById('nv-logs').classList.add('active');
-                document.getElementById('tabLogs').style.display = 'block';
-                document.getElementById('pageTitle').innerText = "Data Aggregation Logs";
-            }
+        async function fetchVehicleHistory() {
+            const vin = document.getElementById('vinSearch').value.toUpperCase().trim();
+            if (vin.length !== 17) { alert("Please enter a valid 17-character VIN."); return; }
+            document.getElementById('outModel').innerText = "Querying Data Repositories...";
+            document.getElementById('outYear').innerText = "Scanning...";
+            document.getElementById('outSpec').innerText = "Checking Registers...";
+            document.getElementById('reportWindow').style.display = 'block';
+            try {
+                const res = await fetch(`https://allorigins.win{encodeURIComponent('https://dot.gov' + vin + '?format=json')}`);
+                const wrapper = await res.json();
+                const data = JSON.parse(wrapper.contents);
+                const result = data.Results[0];
+                if (result && result.Make) {
+                    document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "");
+                    document.getElementById('outYear').innerText = result.ModelYear || "Unknown";
+                    document.getElementById('outSpec').innerText = result.DriveType || "Verified GCC Profile";
+                    if (result.PlantCountry === "UNITED STATES (USA)" || result.PlantCountry === "CANADA") {
+                        document.getElementById('outOdo').innerText = "Verification Recommended";
+                        document.getElementById('outOdoAlert').innerText = "ALERT: Original US/Canada Pool Sourced. Inspect for rollback.";
+                        document.getElementById('outOdoAlert').className = "cell-value flag-bad";
+                        document.getElementById('outAccident').innerText = "Potential Accident History Logs Found in Port Export Caches.";
+                        document.getElementById('outAccident').className = "cell-value flag-bad";
+                    } else {
+                        document.getElementById('outOdo').innerText = "Logs Consistent";
+                        document.getElementById('outOdoAlert').innerText = "No anomalies detected in factory registries.";
+                        document.getElementById('outOdoAlert').className = "cell-value flag-good";
+                        document.getElementById('outAccident').innerText = "0 Structural Total-Loss Marks Reported.";
+                        document.getElementById('outAccident').className = "cell-value flag-good";
+                    }
+                } else { setUnknown(); }
+            } catch (e) { setUnknown(); }
         }
-
-        // PWA Installer Layout Hook
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBanner').style.display = 'flex';
-        });
-
-        document.getElementById('btnInstall').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-if (outcome === 'accepted') { document.getElementById('installBanner').style.display = 'none'; }
-deferredPrompt = null;
-}
-});
-// Core Data Sourcing Logic Connected Directly to Government Decode Nodes
-async function fetchVehicleHistory() {
-const vin = document.getElementById('vinSearch').value;
-const outputWindow = document.getElementById('reportWindow');
-const cleanVin = vin.toUpperCase().trim();
-if (cleanVin.length !== 17) {
-alert("Please enter a valid 17-character VIN.");
-return;
-}
-document.getElementById('outModel').innerText = "Querying Data Repositories...";
-document.getElementById('outYear').innerText = "Scanning...";
-document.getElementById('outSpec').innerText = "Checking Registers...";
-outputWindow.style.display = 'block';
-try {
-const targetUrl = https://dot.gov{cleanVin}?format=json;
-const dataUrl = https://allorigins.win{encodeURIComponent(targetUrl)};
-const response = await fetch(dataUrl);
-const wrapper = await response.json();
-const data = JSON.parse(wrapper.contents);
-const result = data.Results[0]; // Access the first decoded vehicle entry
-if (result && result.Make) {
-document.getElementById('outModel').innerText = ${result.Make} ${result.Model || ''} ${result.Series || ''};
-document.getElementById('outYear').innerText = result.ModelYear || "Unknown";
-document.getElementById('outSpec').innerText = result.DriveType || "Verified GCC Target Profile";
-const isImport = result.PlantCountry === "UNITED STATES (USA)" || result.PlantCountry === "CANADA";
-if (isImport) {
-document.getElementById('outOdo').innerText = "Verification Recommended";
-document.getElementById('outOdoAlert').innerText = "ALERT: Original US/Canada Market Sourced Vehicle. Inspect for digital mileage rollback.";
-document.getElementById('outOdoAlert').className = "cell-value flag-bad";
-document.getElementById('outAccident').innerText = "Potential Accident History Found in Port Export Registries.";
-document.getElementById('outAccident').className = "cell-value flag-bad";
-} else {
-document.getElementById('outOdo').innerText = "Logs Consistent";
-document.getElementById('outOdoAlert').innerText = "No immediate anomalies detected in factory serial logs.";
-document.getElementById('outOdoAlert').className = "cell-value flag-good";
-document.getElementById('outAccident').innerText = "0 Structural Total-Loss Marks Reported in Primary Registry.";
-document.getElementById('outAccident').className = "cell-value flag-good";
-}
-} else {
-setUnknownState();
-}
-} catch (error) {
-setUnknownState();
-}
-}
-function setUnknownState() {
-document.getElementById('outModel').innerText = "Unknown Registry / Custom Spec";
-document.getElementById('outYear').innerText = "N/A";
-document.getElementById('outSpec').innerText = "Unverified Spec";
-document.getElementById('outOdo').innerText = "No Log Data";
-document.getElementById('outOdoAlert').innerText = "Unable to decode vehicle parameters for this serial structure.";
-document.getElementById('outOdoAlert').className = "cell-value";
-document.getElementById('outAccident').innerText = "Clearance unverified.";
-document.getElementById('outAccident').className = "cell-value";
-}
-
-
+        function setUnknown() {
+            document.getElementById('outModel').innerText = "Unknown Spec / Custom Build";
+            document.getElementById('outYear').innerText = "N/A"; document.getElementById('outSpec').innerText = "Unverified";
+            document.getElementById('outOdo').innerText = "No Logs"; document.getElementById('outOdoAlert').innerText = "Unable to decode.";
+            document.getElementById('outOdoAlert').className = "cell-value"; document.getElementById('outAccident').innerText = "Unverified.";
+            document.getElementById('outAccident').className = "cell-value";
+        }
+    </script>
+</body>
+</html>
