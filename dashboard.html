@@ -71,8 +71,7 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                // Clear direct path to official automotive data registers without parsing typos
-                const targetLink = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/' + vin + '?format=json';
+                const targetLink = 'https://dot.gov' + vin + '?format=json';
                 const proxyLink = 'https://allorigins.win' + encodeURIComponent(targetLink);
                 
                 const res = await fetch(proxyLink);
