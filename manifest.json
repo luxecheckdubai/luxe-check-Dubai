@@ -1,0 +1,15 @@
+{
+  "short_name": "LuxeCheck",
+  "name": "Luxe Check Dubai - Vehicle Intelligence",
+  "icons": [
+    {
+      "src": "https://icons8.com",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "dashboard.html",
+  "background_color": "#0d0e12",
+  "display": "standalone",
+  "theme_color": "#1f222a"
+}
