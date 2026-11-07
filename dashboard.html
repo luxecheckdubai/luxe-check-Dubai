@@ -76,7 +76,8 @@
             <span class="search-label">Enter 17-Character Vehicle VIN (Dubai/US/Japan Specs)</span>
             <div class="search-box-row">
                 <input type="text" id="vinSearch" class="vin-input" placeholder="e.g. WBA7R2C50NGX2026X" maxlength="17">
-                <button onclick="runVehicleSearch()" class="search-btn">Verify History</button>
+                <button onclick="fetchVehicleHistory(document.getElementById('vinSearch').value)" class="search-btn">Verify History</button>
+
             </div>
         </div>
 
@@ -139,4 +140,5 @@
         }
     </script>
 </body>
+    <script src="app.js"></script>
 </html>
