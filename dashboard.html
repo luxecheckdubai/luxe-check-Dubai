@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxe Check Dubai - Enterprise Vehicle Intelligence</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0e12; color: #e4e6eb; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Navigation Layout */
+        .sidebar { width: 260px; background-color: #161820; border-right: 1px solid #252836; display: flex; flex-direction: column; padding: 25px 20px; }
+        .logo { font-size: 20px; font-weight: 700; color: #ffbc00; letter-spacing: 1px; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+        .nav-item { padding: 12px 15px; border-radius: 8px; color: #a5a8b6; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: 0.2s; }
+        .nav-item.active, .nav-item:hover { background-color: #252836; color: #ffffff; }
+        
+        /* Main Workspace Window */
+        .main-content { flex: 1; display: flex; flex-direction: column; background-color: #0d0e12; padding: 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .header h1 { font-size: 26px; font-weight: 600; color: #ffffff; }
+        
+        /* Enterprise VIN Search Console */
+        .search-container { background-color: #161820; border: 1px solid #252836; border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .search-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #a5a8b6; font-weight: 700; margin-bottom: 12px; display: block; }
+        .search-box-row { display: flex; gap: 15px; }
+        .vin-input { flex: 1; background-color: #1f222a; border: 1px solid #252836; border-radius: 8px; padding: 16px 20px; font-size: 16px; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; transition: 0.3s; }
+        .vin-input:focus { border-color: #ffbc00; outline: none; }
+        .search-btn { background-color: #ffbc00; color: #0d0e12; border: none; border-radius: 8px; padding: 0 35px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .search-btn:hover { background-color: #e0a500; }
+        
+        /* Custom Desktop PWA Install Button banner */
+        .install-banner { display: none; background: linear-gradient(90deg, #1f222a, #161820); border: 1px dashed #ffbc00; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px; align-items: center; justify-content: space-between; }
+        .install-text { font-size: 14px; color: #e4e6eb; }
+        .install-btn { background-color: transparent; border: 1px solid #ffbc00; color: #ffbc00; padding: 6px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .install-btn:hover { background-color: #ffbc00; color: #0d0e12; }
+
+        /* Report Output Display */
+        .report-window { background-color: #161820; border: 1px solid #252836; border-radius: 12px; padding: 30px; display: none; }
+        .report-section { border-bottom: 1px solid #252836; padding-bottom: 20px; margin-bottom: 20px; }
+        .report-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        .section-title { font-size: 14px; text-transform: uppercase; color: #ffbc00; font-weight: 700; margin-bottom: 15px; }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .data-cell { background-color: #1f222a; padding: 15px; border-radius: 8px; border: 1px solid #252836; }
+        .cell-label { font-size: 12px; color: #a5a8b6; margin-bottom: 5px; }
+        .cell-value { font-size: 15px; font-weight: 600; color: #ffffff; }
+        .flag-bad { color: #ff4a4a; }
+        .flag-good { color: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Window -->
+    <div class="sidebar">
+        <div class="logo">🏁 LUXE CHECK</div>
+        <div class="nav-item active">📊 VIN Intelligence Engine</div>
+        <div class="nav-item">💳 Corporate License Billing</div>
+        <div class="nav-item">📈 Data Aggregation Logs</div>
+    </div>
+
+    <!-- Main Content Workspace -->
+    <div class="main-content">
+        
+        <!-- App Install Notification Alert Banner -->
+        <div id="installBanner" class="install-banner">
+            <div class="install-text">⚡ Pin Luxe Check to your desktop dashboard for instant search access.</div>
+            <button id="btnInstall" class="install-btn">Install Shortcut</button>
+        </div>
+
+        <div class="header">
+            <h1>Vehicle History Intelligence Console</h1>
+        </div>
+
+        <!-- Search Bar Console -->
+        <div class="search-container">
+            <span class="search-label">Enter 17-Character Vehicle VIN (Dubai/US/Japan Specs)</span>
+            <div class="search-box-row">
+                <input type="text" id="vinSearch" class="vin-input" placeholder="e.g. WBA7R2C50NGX2026X" maxlength="17">
+                <button onclick="runVehicleSearch()" class="search-btn">Verify History</button>
+            </div>
+        </div>
+
+        <!-- Clean Formatted Output Report Window -->
+        <div id="reportWindow" class="report-window">
+            <div class="report-section">
+                <div class="section-title">📋 Core Vehicle Registry Specs</div>
+                <div class="data-grid">
+                    <div class="data-cell"><div class="cell-label">Make/Model</div><div id="outModel" class="cell-value">-</div></div>
+                    <div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div>
+                    <div class="data-cell"><div class="cell-label">Verified Spec Category</div><div id="outSpec" class="cell-value">-</div></div>
+                </div>
+            </div>
+            
+            <div class="report-section">
+                <div class="section-title">🚨 System Odometer & Integrity History Logs</div>
+                <div class="data-grid">
+                    <div class="data-cell"><div class="cell-label">Current Odometer Log</div><div id="outOdo" class="cell-value">-</div></div>
+                    <div class="data-cell"><div class="cell-label">Odometer Status Alert</div><div id="outOdoAlert" class="cell-value">-</div></div>
+                    <div class="data-cell"><div class="cell-label">Accident Records Found</div><div id="outAccident" class="cell-value">-</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Custom PWA Desktop Shortcut Installer Action Code
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'flex';
+        });
+
+        document.getElementById('btnInstall').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') { document.getElementById('installBanner').style.display = 'none'; }
+                deferredPrompt = null;
+            }
+        });
+
+        // Search Trigger Code Hook
+        function runVehicleSearch() {
+            let inputVin = document.getElementById('vinSearch').value;
+            if(inputVin.length < 17) { alert("Please input a valid 17-character VIN identifier string."); return; }
+            
+            // Temporary baseline data mockup loop layout before backend integration hook
+            document.getElementById('reportWindow').style.display = 'block';
+            document.getElementById('outModel').innerText = "Mercedes-AMG G63";
+            document.getElementById('outYear').innerText = "2024";
+            document.getElementById('outSpec').innerText = "US Import (Converted to GCC)";
+            document.getElementById('outOdo').innerText = "42,100 KM";
+            document.getElementById('outOdoAlert').innerText = "WARNING: Potential Digital Odometer Rollback Detected";
+            document.getElementById('outOdoAlert').className = "cell-value flag-bad";
+            document.getElementById('outAccident').innerText = "2 Incidents Found (1 Salvage Structural Impact Auction Record)";
+            document.getElementById('outAccident').className = "cell-value flag-bad";
+        }
+    </script>
+</body>
+</html>
