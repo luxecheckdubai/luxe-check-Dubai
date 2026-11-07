@@ -71,12 +71,9 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                const targetLink = 'https://dot.gov' + vin + '?format=json';
-                const proxyLink = 'https://allorigins.win' + encodeURIComponent(targetLink);
-                
-                const res = await fetch(proxyLink);
-                const wrapper = await res.json();
-                const data = JSON.parse(wrapper.contents);
+                // Direct high-speed API data fetch bypassing proxy dependencies completely
+                const res = await fetch(`https://dot.gov{vin}?format=json`);
+                const data = await res.json();
                 const result = data.Results[0];
                 
                 if (result && result.Make && result.Make.trim() !== "") {
