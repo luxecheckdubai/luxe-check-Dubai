@@ -53,9 +53,9 @@
     <!-- Sidebar Window -->
     <div class="sidebar">
         <div class="logo">🏁 LUXE CHECK</div>
-        <div class="nav-item active">📊 VIN Intelligence Engine</div>
-        <div class="nav-item">💳 Corporate License Billing</div>
-        <div class="nav-item">📈 Data Aggregation Logs</div>
+        <div class="nav-item active" onclick="switchTab('vin')">📊 VIN Intelligence Engine</div>
+        <div class="nav-item" onclick="switchTab('billing')">💳 Corporate License Billing</div>
+        <div class="nav-item" onclick="switchTab('logs')">📈 Data Aggregation Logs</div>
     </div>
 
     <!-- Main Content Workspace -->
@@ -64,49 +64,91 @@
         <!-- App Install Notification Alert Banner -->
         <div id="installBanner" class="install-banner">
             <div class="install-text">⚡ Pin Luxe Check to your desktop dashboard for instant search access.</div>
-           <button onclick="fetchVehicleHistory(document.getElementById('vinSearch').value)" class="search-btn">Verify History</button>
- 
+            <button id="btnInstall" class="install-btn">Install Shortcut</button>
         </div>
 
         <div class="header">
-            <h1>Vehicle History Intelligence Console</h1>
+            <h1 id="pageTitle">Vehicle History Intelligence Console</h1>
         </div>
 
-        <!-- Search Bar Console -->
-        <div class="search-container">
-            <span class="search-label">Enter 17-Character Vehicle VIN (Dubai/US/Japan Specs)</span>
-            <div class="search-box-row">
-                <input type="text" id="vinSearch" class="vin-input" placeholder="e.g. WBA7R2C50NGX2026X" maxlength="17">
-                <button onclick="fetchVehicleHistory(document.getElementById('vinSearch').value)" class="search-btn">Verify History</button>
+        <!-- Tab 1: Search Console -->
+        <div id="tabVinConsole">
+            <div class="search-container">
+                <span class="search-label">Enter 17-Character Vehicle VIN (Dubai/US/Japan Specs)</span>
+                <div class="search-box-row">
+                    <input type="text" id="vinSearch" class="vin-input" placeholder="e.g. WBA7R2C50NGX2026X" maxlength="17">
+                    <button onclick="fetchVehicleHistory()" class="search-btn">Verify History</button>
+                </div>
+            </div>
 
+            <!-- Clean Formatted Output Report Window -->
+            <div id="reportWindow" class="report-window">
+                <div class="report-section">
+                    <div class="section-title">📋 Core Vehicle Registry Specs</div>
+                    <div class="data-grid">
+                        <div class="data-cell"><div class="cell-label">Make/Model</div><div id="outModel" class="cell-value">-</div></div>
+                        <div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div>
+                        <div class="data-cell"><div class="cell-label">Verified Spec Category</div><div id="outSpec" class="cell-value">-</div></div>
+                    </div>
+                </div>
+                
+                <div class="report-section">
+                    <div class="section-title">🚨 System Odometer & Integrity History Logs</div>
+                    <div class="data-grid">
+                        <div class="data-cell"><div class="cell-label">Current Odometer Log</div><div id="outOdo" class="cell-value">-</div></div>
+                        <div class="data-cell"><div class="cell-label">Odometer Status Alert</div><div id="outOdoAlert" class="cell-value">-</div></div>
+                        <div class="data-cell"><div class="cell-label">Accident Records Found</div><div id="outAccident" class="cell-value">-</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Billing Menu Mockup -->
+        <div id="tabBilling" style="display: none;">
+            <div class="search-container">
+                <h3 style="color: #ffbc00; margin-bottom: 15px;">Corporate Account Status</h3>
+                <p style="margin-bottom: 10px;">Client Profile: <strong>Active Subscription</strong></p>
+                <p>License Gateway: Connected via USD/USDT Ledger Engine</p>
             </div>
         </div>
 
-        <!-- Clean Formatted Output Report Window -->
-        <div id="reportWindow" class="report-window">
-            <div class="report-section">
-                <div class="section-title">📋 Core Vehicle Registry Specs</div>
-                <div class="data-grid">
-                    <div class="data-cell"><div class="cell-label">Make/Model</div><div id="outModel" class="cell-value">-</div></div>
-                    <div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div>
-                    <div class="data-cell"><div class="cell-label">Verified Spec Category</div><div id="outSpec" class="cell-value">-</div></div>
-                </div>
-            </div>
-            
-            <div class="report-section">
-                <div class="section-title">🚨 System Odometer & Integrity History Logs</div>
-                <div class="data-grid">
-                    <div class="data-cell"><div class="cell-label">Current Odometer Log</div><div id="outOdo" class="cell-value">-</div></div>
-                    <div class="data-cell"><div class="cell-label">Odometer Status Alert</div><div id="outOdoAlert" class="cell-value">-</div></div>
-                    <div class="data-cell"><div class="cell-label">Accident Records Found</div><div id="outAccident" class="cell-value">-</div></div>
-                </div>
+        <!-- Tab 3: Logs Menu Mockup -->
+        <div id="tabLogs" style="display: none;">
+            <div class="search-container">
+                <h3 style="color: #ffbc00; margin-bottom: 15px;">System Diagnostic Logs</h3>
+                <p style="color: #2ecc71;">[SUCCESS] Database connection established seamlessly.</p>
+                <p style="color: #a5a8b6; margin-top: 10px;">System listening for unique 17-character VIN lookups...</p>
             </div>
         </div>
 
     </div>
 
     <script>
-        // Custom PWA Desktop Shortcut Installer Action Code
+        // Tab Swapping Code Logic
+        function switchTab(tabName) {
+            const items = document.querySelectorAll('.nav-item');
+            items.forEach(item => item.classList.remove('active'));
+            
+            document.getElementById('tabVinConsole').style.display = 'none';
+            document.getElementById('tabBilling').style.display = 'none';
+            document.getElementById('tabLogs').style.display = 'none';
+
+            if (tabName === 'vin') {
+                items[0].classList.add('active');
+                document.getElementById('tabVinConsole').style.display = 'block';
+                document.getElementById('pageTitle').innerText = "Vehicle History Intelligence Console";
+            } else if (tabName === 'billing') {
+                items[1].classList.add('active');
+                document.getElementById('tabBilling').style.display = 'block';
+                document.getElementById('pageTitle').innerText = "Corporate License Billing";
+            } else if (tabName === 'logs') {
+                items[2].classList.add('active');
+                document.getElementById('tabLogs').style.display = 'block';
+                document.getElementById('pageTitle').innerText = "Data Aggregation Logs";
+            }
+        }
+
+        // PWA Installer
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -123,23 +165,3 @@
             }
         });
 
-        // Search Trigger Code Hook
-        function runVehicleSearch() {
-            let inputVin = document.getElementById('vinSearch').value;
-            if(inputVin.length < 17) { alert("Please input a valid 17-character VIN identifier string."); return; }
-            
-            // Temporary baseline data mockup loop layout before backend integration hook
-            document.getElementById('reportWindow').style.display = 'block';
-            document.getElementById('outModel').innerText = "Mercedes-AMG G63";
-            document.getElementById('outYear').innerText = "2024";
-            document.getElementById('outSpec').innerText = "US Import (Converted to GCC)";
-            document.getElementById('outOdo').innerText = "42,100 KM";
-            document.getElementById('outOdoAlert').innerText = "WARNING: Potential Digital Odometer Rollback Detected";
-            document.getElementById('outOdoAlert').className = "cell-value flag-bad";
-            document.getElementById('outAccident').innerText = "2 Incidents Found (1 Salvage Structural Impact Auction Record)";
-            document.getElementById('outAccident').className = "cell-value flag-bad";
-        }
-    </script>
-</body>
-<script src="app.js"></script>
-</html>
