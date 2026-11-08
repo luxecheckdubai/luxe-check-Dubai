@@ -71,10 +71,14 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                // Fixed direct master database decoder URL link string
-                const res = await fetch(`https://dot.gov{vin}?format=json`);
-                const data = await res.json();
-                const result = data.Results[0]; // Read the direct first database array row layout
+                // AUTHENTIC DIRECT MASTER REGISTER LOG CONNECTION URL
+                const liveEndpoint = 'https://dot.gov' + vin + '?format=json';
+                const proxyServer = 'https://allorigins.win' + encodeURIComponent(liveEndpoint);
+                
+                const res = await fetch(proxyServer);
+                const wrapper = await res.json();
+                const data = JSON.parse(wrapper.contents);
+                const result = data.Results[0]; // Access the exact decoded row structure matching parameters
                 
                 if (result && result.Make && result.Make.trim() !== "") {
                     document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "");
