@@ -71,14 +71,14 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                // AUTHENTIC DIRECT MASTER REGISTER LOG CONNECTION URL
-                const liveEndpoint = 'https://dot.gov' + vin + '?format=json';
-                const proxyServer = 'https://allorigins.win' + encodeURIComponent(liveEndpoint);
+                // FIXED DATA ROUTE BYPASSING CORS BLOCKS
+                const targetEndpoint = 'https://dot.gov' + vin + '?format=json';
+                const secureProxy = 'https://allorigins.win' + encodeURIComponent(targetEndpoint);
                 
-                const res = await fetch(proxyServer);
-                const wrapper = await res.json();
+                const response = await fetch(secureProxy);
+                const wrapper = await response.json();
                 const data = JSON.parse(wrapper.contents);
-                const result = data.Results[0]; // Access the exact decoded row structure matching parameters
+                const result = data.Results[0]; // Read the exact top matching data row layout
                 
                 if (result && result.Make && result.Make.trim() !== "") {
                     document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "");
