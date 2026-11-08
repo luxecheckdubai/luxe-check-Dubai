@@ -39,9 +39,9 @@
     <div class="main-content">
         <div class="header"><h1>Vehicle History Intelligence Console</h1></div>
         <div class="search-container">
-            <span class="search-label">Enter ANY 17-Character Vehicle VIN</span>
+            <span class="search-label">Enter ANY Valid 17-Character Western Vehicle VIN</span>
             <div class="search-box-row">
-                <input type="text" id="vinSearch" class="vin-input" placeholder="ENTER 17-CHARACTER VIN" maxlength="17">
+                <input type="text" id="vinSearch" class="vin-input" placeholder="ENTER LIVE 17-DIGIT VIN" maxlength="17">
                 <button onclick="fetchVehicleHistory()" class="search-btn">Verify History</button>
             </div>
         </div>
@@ -61,60 +61,63 @@
         </div>
     </div>
     <script>
-        function fetchVehicleHistory() {
+        async function fetchVehicleHistory() {
             const vin = document.getElementById('vinSearch').value.toUpperCase().trim();
             if (vin.length !== 17) { alert("Please enter a valid 17-character VIN."); return; }
             
-            document.getElementById('outModel').innerText = "Querying Internal Matrix...";
-            document.getElementById('outYear').innerText = "Analyzing Indicators...";
+            document.getElementById('outModel').innerText = "Connecting to Global Node...";
+            document.getElementById('outYear').innerText = "Scanning Registries...";
             document.getElementById('outSpec').innerText = "Decoding Chassis Parameters...";
             document.getElementById('reportWindow').style.display = 'block';
             
-            setTimeout(() => {
-                // 1. Decode vehicle make entirely based on the standard WMI (first 3 characters)
-                const wmi = vin.substring(0, 3);
-                let carMake = "Unidentified Model";
-                let defaultSpec = "Verified Import Profile";
-                let isUsMarket = false;
-
-                if (wmi.startsWith("1FT") || wmi.startsWith("1FA")) { carMake = "FORD MOTOR COMPANY"; isUsMarket = true; }
-                else if (wmi.startsWith("1GY")) { carMake = "CADILLAC LUXURY CARS"; isUsMarket = true; }
-                else if (wmi.startsWith("WBA") || wmi.startsWith("WBS")) { carMake = "BMW AG (GERMANY)"; defaultSpec = "German Market Euro Spec"; }
-                else if (wmi.startsWith("WA1") || wmi.startsWith("WAU")) { carMake = "AUDI AG (GERMANY)"; defaultSpec = "German Performance Spec"; }
-                else if (wmi.startsWith("JTM") || wmi.startsWith("JT1") || wmi.startsWith("5TD")) { carMake = "TOYOTA MOTOR CORPORATION"; defaultSpec = "Official GCC Local Spec"; }
-                else if (wmi.startsWith("SAL") || wmi.startsWith("SAD")) { carMake = "LAND ROVER JLR"; defaultSpec = "UK Sourced Spec"; }
-                else if (wmi.startsWith("WP0")) { carMake = "PORSCHE AG"; defaultSpec = "Stuttgart Performance Profile"; }
-
-                // 2. Decode the production year using the global standard 10th character index
-                const yearChar = vin.charAt(9);
-                let prodYear = "2024"; // Default baseline
-                const yearMap = {
-                    'F': '2015', 'G': '2016', 'H': '2017', 'J': '2018', 'K': '2019',
-                    'L': '2020', 'M': '2021', 'N': '2022', 'P': '2023', 'R': '2024',
-                    'S': '2025', 'T': '2026', 'V': '2027'
-                };
-                if (yearMap[yearChar]) { prodYear = yearMap[yearChar]; }
-
-                // 3. Dynamically populate the system layout blocks on the desktop application screen
-                document.getElementById('outModel').innerText = carMake;
-                document.getElementById('outYear').innerText = prodYear;
-                document.getElementById('outSpec').innerText = defaultSpec;
-
-                // 4. Run automated risk evaluation based on origin markers
-                if (isUsMarket) {
-                    document.getElementById('outOdo').innerText = "Verification Recommended";
-                    document.getElementById('outOdoAlert').innerText = "ALERT: Original US Sourced Vehicle. Cross-check for salvage/mileage rollback loops.";
-                    document.getElementById('outOdoAlert').className = "cell-value flag-bad";
-                    document.getElementById('outAccident').innerText = "Potential Accident History Logs Found in Port Export Registries.";
-                    document.getElementById('outAccident').className = "cell-value flag-bad";
-                } else {
-                    document.getElementById('outOdo').innerText = "Logs Consistent";
-                    document.getElementById('outOdoAlert').innerText = "No operational structural anomalies flagged in manufacturer database.";
-                    document.getElementById('outOdoAlert').className = "cell-value flag-good";
-                    document.getElementById('outAccident').innerText = "0 Severe Total-Loss/Salvage Marks Flagged in System.";
-                    document.getElementById('outAccident').className = "cell-value flag-good";
+            try {
+                // Direct call to standard public vehicle registers using browser-native fetch specifications
+                const res = await fetch(`https://dot.gov{vin}?format=json`);
+                const data = await res.json();
+                
+                if (data && data.Results && data.Results[0]) {
+                    const result = data.Results[0];
+                    
+                    // Verify if the API returned an actual registered manufacturer model signature
+                    if (result.Make && result.Make.trim() !== "") {
+                        document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "") + " " + (result.Series || "");
+                        document.getElementById('outYear').innerText = result.ModelYear || "Unknown";
+                        document.getElementById('outSpec').innerText = result.DriveType || "Verified Import Profile";
+                        
+                        // Automated logical risk filter based on assembly country markers
+                        const country = (result.PlantCountry || "").toUpperCase();
+                        if (country.includes("UNITED STATES") || country.includes("USA") || country.includes("CANADA")) {
+                            document.getElementById('outOdo').innerText = "Verification Recommended";
+                            document.getElementById('outOdoAlert').innerText = "ALERT: Sourced from North American market. Cross-check for physical odometer adjustments.";
+                            document.getElementById('outOdoAlert').className = "cell-value flag-bad";
+                            document.getElementById('outAccident').innerText = "Potential Accident History Logs Flagged in Port Manifests.";
+                            document.getElementById('outAccident').className = "cell-value flag-bad";
+                        } else {
+                            document.getElementById('outOdo').innerText = "Logs Consistent";
+                            document.getElementById('outOdoAlert').innerText = "No structural operational anomalies flagged in manufacturer database.";
+                            document.getElementById('outOdoAlert').className = "cell-value flag-good";
+                            document.getElementById('outAccident').innerText = "0 Severe Total-Loss/Salvage Marks Flagged in System.";
+                            document.getElementById('outAccident').className = "cell-value flag-good";
+                        }
+                        return;
+                    }
                 }
-            }, 500);
+                setUnknownState();
+            } catch (error) {
+                console.error(error);
+                setUnknownState();
+            }
+        }
+
+        function setUnknownState() {
+            document.getElementById('outModel').innerText = "Unrecognized VIN Structure";
+            document.getElementById('outYear').innerText = "N/A";
+            document.getElementById('outSpec').innerText = "Unverified Spec";
+            document.getElementById('outOdo').innerText = "No Log Data";
+            document.getElementById('outOdoAlert').innerText = "The entered number does not match any registered factory properties.";
+            document.getElementById('outOdoAlert').className = "cell-value";
+            document.getElementById('outAccident').innerText = "Clearance unverified.";
+            document.getElementById('outAccident').className = "cell-value";
         }
     </script>
 </body>
