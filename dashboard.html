@@ -75,7 +75,8 @@
                 const data = await response.json();
                 
                 if (data && data.Results && data.Results.length > 0) {
-                    const result = data.Results[0];
+                    const result = data.Results.at(0);
+
                     
                     if (result.Make && result.Make.trim() !== "") {
                         document.getElementById('outModel').innerText = `${result.Make} ${result.Model || ""} ${result.Series || ""}`.trim();
