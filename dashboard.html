@@ -71,15 +71,15 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                const response = await fetch(`https://dot.gov{vin}?format=json`);
+                const apiUrl = 'https://dot.gov' + vin + '?format=json';
+                const response = await fetch(apiUrl);
                 const data = await response.json();
                 
                 if (data && data.Results && data.Results.length > 0) {
                     const result = data.Results.at(0);
-
                     
                     if (result.Make && result.Make.trim() !== "") {
-                        document.getElementById('outModel').innerText = `${result.Make} ${result.Model || ""} ${result.Series || ""}`.trim();
+                        document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "") + " " + (result.Series || "");
                         document.getElementById('outYear').innerText = result.ModelYear || "Unknown";
                         document.getElementById('outSpec').innerText = result.DriveType || result.BodyClass || "Verified Import Profile";
                         
@@ -100,19 +100,18 @@
                         return;
                     }
                 }
-                setUnknownState();
+                setUnknownState("No matching factory record found.");
             } catch (error) {
-                console.error(error);
-                setUnknownState();
+                setUnknownState("Error: " + error.message);
             }
         }
 
-        function setUnknownState() {
+        function setUnknownState(reason) {
             document.getElementById('outModel').innerText = "Unrecognized VIN Structure";
             document.getElementById('outYear').innerText = "N/A";
             document.getElementById('outSpec').innerText = "Unverified Spec";
             document.getElementById('outOdo').innerText = "No Log Data";
-            document.getElementById('outOdoAlert').innerText = "The entered number does not match any registered factory properties.";
+            document.getElementById('outOdoAlert').innerText = reason;
             document.getElementById('outOdoAlert').className = "cell-value";
             document.getElementById('outAccident').innerText = "Clearance unverified.";
             document.getElementById('outAccident').className = "cell-value";
