@@ -71,20 +71,17 @@
             document.getElementById('reportWindow').style.display = 'block';
             
             try {
-                // Direct call to standard public vehicle registers using browser-native fetch specifications
-                const res = await fetch(`https://dot.gov{vin}?format=json`);
-                const data = await res.json();
+                const response = await fetch(`https://dot.gov{vin}?format=json`);
+                const data = await response.json();
                 
-                if (data && data.Results && data.Results[0]) {
+                if (data && data.Results && data.Results.length > 0) {
                     const result = data.Results[0];
                     
-                    // Verify if the API returned an actual registered manufacturer model signature
                     if (result.Make && result.Make.trim() !== "") {
-                        document.getElementById('outModel').innerText = result.Make + " " + (result.Model || "") + " " + (result.Series || "");
+                        document.getElementById('outModel').innerText = `${result.Make} ${result.Model || ""} ${result.Series || ""}`.trim();
                         document.getElementById('outYear').innerText = result.ModelYear || "Unknown";
-                        document.getElementById('outSpec').innerText = result.DriveType || "Verified Import Profile";
+                        document.getElementById('outSpec').innerText = result.DriveType || result.BodyClass || "Verified Import Profile";
                         
-                        // Automated logical risk filter based on assembly country markers
                         const country = (result.PlantCountry || "").toUpperCase();
                         if (country.includes("UNITED STATES") || country.includes("USA") || country.includes("CANADA")) {
                             document.getElementById('outOdo').innerText = "Verification Recommended";
