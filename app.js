@@ -1,5 +1,5 @@
-const SUPABASE_URL = "hmalcmjjjhrgaxjbzsgm";
-const SUPABASE_ANON_KEY = "sb_publishable_qU2D8awXEeEIYIitlcz5bw_iiOa2SMu";
+const SUPABASE_URL = "https://hmalcmjjjhrgaxjbzsgm.supabase.co";
+const SUPABASE_ANON_KEY = "process.env.SUPABASE_KEY";
 const NOWPAYMENTS_LINK = "https://nowpayments.io/payment/?iid=5968176250";
 
 let sb = null, isSignUpMode = false;
