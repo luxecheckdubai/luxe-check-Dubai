@@ -1,6 +1,6 @@
-const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
-const NOWPAYMENTS_LINK = "PASTE_YOUR_NOWPAYMENTS_50_USD_TRON_LINK_HERE";
+const SUPABASE_URL = hmalcmjjjhrgaxjbzsgm;
+const SUPABASE_ANON_KEY =sb_publishable_qU2D8awXEeEIYIitlcz5bw_iiOa2SMu;
+const NOWPAYMENTS_LINK = https://nowpayments.io/payment/?iid=5968176250;
 
 let sb = null, isSignUpMode = false;
 function initApp() { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); checkUserSession(); }
