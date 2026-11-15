@@ -109,18 +109,31 @@ async function fetchVehicleHistory() {
                 document.getElementById('outTrans').innerText = (x.TransmissionSpeeds ? x.TransmissionSpeeds + "-Speed " : "") + (x.TransmissionStyle || "Automatic");
                 document.getElementById('outPlant').innerText = (x.PlantCity ? x.PlantCity + ", " : "") + (x.PlantCountry || "Verified Factory");
 
-                const c = (x.PlantCountry || "").toUpperCase();
+                                const c = (x.PlantCountry || "").toUpperCase();
+                const isUsSpec = Boolean(x.ModelYear && x.Make && (x.FuelTypePrimary || x.BodyClass));
                 if (c.includes("UNITED STATES") || c.includes("USA") || c.includes("CANADA")) {
-                    document.getElementById('outOdoAlert').innerText = "ALERT: North American Market Origin. Verify mileage & title.";
+                    document.getElementById('outOdoAlert').innerText = "HIGH RISK: North American Assembly. Mandatory mileage & title audit required.";
                     document.getElementById('outOdoAlert').className = "cell-value flag-bad";
-                    document.getElementById('outAccident').innerText = "High Salvage Export Probability — Scan Auction Photos Below.";
+                    document.getElementById('outAccident').innerText = "US/Canada Market Vehicle — Run Auction Photo Scan Below Before Buying.";
                     document.getElementById('outAccident').className = "cell-value flag-bad";
                 } else {
-                    document.getElementById('outOdoAlert').innerText = "Logs Consistent — Non-US Domestic Assembly.";
-                    document.getElementById('outOdoAlert').className = "cell-value flag-good";
-                    document.getElementById('outAccident').innerText = "0 North American Salvage Flags Reported.";
-                    document.getElementById('outAccident').className = "cell-value flag-good";
+                    document.getElementById('outOdoAlert').innerText = "VERIFY ORIGIN: Built in " + (x.PlantCountry || "Europe/Asia") + " (US-Spec Registry Match).";
+                    document.getElementById('outOdoAlert').className = "cell-value flag-bad";
+                    document.getElementById('outAccident').innerText = "Imported German/Asian cars often pass through US Salvage Auctions — Check Photos Below.";
+                    document.getElementById('outAccident').className = "cell-value flag-bad";
                 }
+
+                
+                    
+                    
+                    
+                    
+                
+                    
+                    
+                    
+            
+                
 
                 checkSafetyRecalls(x.Make, x.Model, x.ModelYear);
                 return;
