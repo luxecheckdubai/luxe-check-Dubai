@@ -84,9 +84,15 @@ async function fetchVehicleHistory() {
     document.getElementById('outRecalls').innerText = "Checking Safety Bulletins...";
     document.getElementById('reportWindow').style.display = 'block';
 
-    document.getElementById('linkGoogle').href = "https://google.com" + encodeURIComponent(v);
-    document.getElementById('linkBidfax').href = "https://google.com" + encodeURIComponent("site:bidfax.info " + v);
-    document.getElementById('linkAutoastat').href = "https://google.com" + encodeURIComponent("site:autoastat.com " + v);
+        const gSearch = "https://www.google" + ".com/search?q=";
+    const gImages = "https://www.google" + ".com/search?tbm=isch&q=";
+
+    document.getElementById('linkGoogle').onclick = (e) => { e.preventDefault(); window.open(gImages + encodeURIComponent(v), '_blank'); };
+    document.getElementById('linkBidfax').onclick = (e) => { e.preventDefault(); window.open(gSearch + encodeURIComponent(v + " auction salvage"), '_blank'); };
+    document.getElementById('linkAutoastat').onclick = (e) => { e.preventDefault(); window.open(gSearch + encodeURIComponent(v + " copart iaai"), '_blank'); };
+
+    
+    
 
     try {
         const d = "vpic.nhtsa" + ".dot.gov";
