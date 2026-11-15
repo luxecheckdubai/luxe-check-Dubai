@@ -4,7 +4,6 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Luxe Check Dubai - Vehicle Intelligence</title><link rel="manifest" href="manifest.json">
 <script>const s=document.createElement('script');s.src=["https:/","unpkg.com","@supabase","supabase-js@2","dist","umd","supabase.js"].join("/");document.head.appendChild(s);</script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}body{background:#0d0e12;color:#e4e6eb;display:flex;height:100vh;overflow:hidden}
 .auth-overlay{position:fixed;inset:0;background:#0d0e12;display:flex;justify-content:center;align-items:center;z-index:9999}
@@ -24,10 +23,17 @@
 .vin-input{flex:1;background:#1f222a;border:1px solid #252836;border-radius:8px;padding:15px 18px;font-size:16px;color:#fff;letter-spacing:2px;text-transform:uppercase;font-weight:600}
 .search-btn{background:#ffbc00;color:#0d0e12;border:none;border-radius:8px;padding:0 32px;font-size:15px;font-weight:700;cursor:pointer}
 .report-window{background:#161820;border:1px solid #252836;border-radius:12px;padding:28px;display:none}
-.section-title{font-size:13px;text-transform:uppercase;color:#ffbc00;font-weight:700;margin-bottom:14px}
-.data-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:20px}
-.data-cell{background:#1f222a;padding:15px;border-radius:8px;border:1px solid #252836}.cell-label{font-size:12px;color:#a5a8b6;margin-bottom:5px}
-.cell-value{font-size:15px;font-weight:600;color:#fff}.flag-bad{color:#ff4a4a}.flag-good{color:#2ecc71}
+.report-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #252836;padding-bottom:15px}
+.pdf-btn{background:#252836;color:#ffbc00;border:1px solid #ffbc00;padding:9px 16px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer}
+.pdf-btn:hover{background:#ffbc00;color:#0d0e12}
+.section-title{font-size:13px;text-transform:uppercase;color:#ffbc00;font-weight:700;margin-bottom:14px;margin-top:10px}
+.data-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:22px}
+.data-cell{background:#1f222a;padding:14px;border-radius:8px;border:1px solid #252836}.cell-label{font-size:12px;color:#a5a8b6;margin-bottom:5px}
+.cell-value{font-size:14px;font-weight:600;color:#fff}.flag-bad{color:#ff4a4a}.flag-good{color:#2ecc71}
+.photo-tools{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.photo-link{background:#1f222a;border:1px solid #3a3f52;color:#e4e6eb;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none}
+.photo-link:hover{border-color:#ffbc00;color:#ffbc00}
+@media print{body{background:#fff;color:#000;height:auto;overflow:visible}.sidebar,.search-container,.pdf-btn,.photo-tools,.auth-overlay{display:none!important}.main-content{padding:0}.report-window{border:1px solid #ccc;background:#fff;display:block!important}.data-cell{background:#f8f9fa;border:1px solid #ddd}.cell-value{color:#000}.section-title{color:#b8860b}}
 </style>
 </head>
 <body>
@@ -39,8 +45,28 @@
 <div id="consoleWorkspace">
 <div class="search-container"><span class="search-label">Enter ANY Valid 17-Character Western Vehicle VIN</span><div class="search-box-row"><input type="text" id="vinSearch" class="vin-input" placeholder="ENTER LIVE 17-DIGIT VIN" maxlength="17"><button onclick="fetchVehicleHistory()" class="search-btn">Verify History</button></div></div>
 <div id="reportWindow" class="report-window">
-<div class="section-title">📋 Core Vehicle Registry Specs</div><div class="data-grid"><div class="data-cell"><div class="cell-label">Make/Model</div><div id="outModel" class="cell-value">-</div></div><div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div><div class="data-cell"><div class="cell-label">Verified Spec Category</div><div id="outSpec" class="cell-value">-</div></div></div>
-<div class="section-title">🚨 System Odometer & Integrity History Logs</div><div class="data-grid"><div class="data-cell"><div class="cell-label">Current Odometer Log</div><div id="outOdo" class="cell-value">-</div></div><div class="data-cell"><div class="cell-label">Odometer Status Alert</div><div id="outOdoAlert" class="cell-value">-</div></div><div class="data-cell"><div class="cell-label">Accident Records Found</div><div id="outAccident" class="cell-value">-</div></div></div>
+<div class="report-top"><div><strong style="color:#ffbc00;font-size:16px;">OFFICIAL LUXE CHECK VERIFICATION DOSSIER</strong><div id="outVinDisplay" style="font-size:12px;color:#a5a8b6;margin-top:3px;">VIN: -</div></div><button onclick="window.print()" class="pdf-btn">📄 Download PDF Report</button></div>
+<div class="section-title">📋 Core Vehicle & Powertrain Specs</div>
+<div class="data-grid">
+<div class="data-cell"><div class="cell-label">Make / Model</div><div id="outModel" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Production Year</div><div id="outYear" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Body & Drive Type</div><div id="outSpec" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Engine & Fuel</div><div id="outEngine" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Transmission</div><div id="outTrans" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Assembly Plant</div><div id="outPlant" class="cell-value">-</div></div>
+</div>
+<div class="section-title">🚨 Import Risk, Safety Recalls & Integrity Logs</div>
+<div class="data-grid">
+<div class="data-cell"><div class="cell-label">Odometer & Import Audit</div><div id="outOdoAlert" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Open Safety Recalls</div><div id="outRecalls" class="cell-value">-</div></div>
+<div class="data-cell"><div class="cell-label">Salvage / Export Risk</div><div id="outAccident" class="cell-value">-</div></div>
+</div>
+<div class="section-title">📸 Live Salvage Auction & Crash Photo Scan</div>
+<div class="photo-tools">
+<a id="linkGoogle" href="#" target="_blank" class="photo-link">🔍 Scan Google Images for Crash Photos</a>
+<a id="linkBidfax" href="#" target="_blank" class="photo-link">🔨 Check Bidfax Auction Archive</a>
+<a id="linkAutoastat" href="#" target="_blank" class="photo-link">🚗 Check AutoAstat / Copart Logs</a>
+</div>
 </div></div></div>
 <script src="app.js"></script>
 </body>
